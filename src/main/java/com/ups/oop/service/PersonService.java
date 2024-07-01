@@ -50,17 +50,40 @@ public class PersonService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 
-    public Person updatePerson(Person person) {
-        Person per = new Person();
+    public ResponseEntity updatePerson(Person person) {
+        String requestId = person.getId();
         int index = 0;
         for(Person pers : personList) {
-            if(person.getId().equalsIgnoreCase(pers.getId())) {
+            if(requestId.equalsIgnoreCase(pers.getId())) {
                 personList.set(index, person);
-                return person;
+                return ResponseEntity.status(HttpStatus.OK).body(person);
             }
             index++;
         }
-        return per;
+        String errorMessage = "Person with id " + requestId + " not found";
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+
+    private int findIndexById(String id){
+        int index = 0;
+        for(Person p : personList) {
+            if(id.equalsIgnoreCase(p.getId())) {
+                return index;
+            }
+            index ++;
+        }
+        return -1;
+    }
+
+    public ResponseEntity updatePerson2(Person person) {
+        String requestId = person.getId();
+        int updateIndex = findIndexById(requestId);
+        if(updateIndex != -1) {
+            personList.set(updateIndex, person);
+            return ResponseEntity.status(HttpStatus.OK).body(person);
+        }
+        String errorMessage = "Person with id " + requestId + " not found";
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 
     public String deletePersonById(String id) {
