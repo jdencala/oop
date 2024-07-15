@@ -1,6 +1,6 @@
 package com.ups.oop.service;
 
-import com.ups.oop.dto.Person;
+import com.ups.oop.dto.PersonDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -10,23 +10,23 @@ import java.util.List;
 
 @Service
 public class PersonService {
-    private List<Person> personList = new ArrayList<>();
+    private List<PersonDTO> personDTOList = new ArrayList<>();
 
-    public ResponseEntity createPerson(Person person) {
-        String personId = person.getId();
+    public ResponseEntity createPerson(PersonDTO personDTO) {
+        String personId = personDTO.getId();
         boolean wasFound = findPerson(personId);
         if(wasFound) {
             String errorMessage = "Person with id " + personId + " already exists";
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
         } else {
-            personList.add(person);
-            return ResponseEntity.status(HttpStatus.OK).body(person);
+            personDTOList.add(personDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(personDTO);
         }
     }
 
     private boolean findPerson(String id) {
-        for(Person person: personList) {
-            if(id.equalsIgnoreCase(person.getId())) {
+        for(PersonDTO personDTO : personDTOList) {
+            if(id.equalsIgnoreCase(personDTO.getId())) {
                 return true;
             }
         }
@@ -34,14 +34,14 @@ public class PersonService {
     }
 
     public ResponseEntity getAllPeople() {
-        if(personList.isEmpty()) {
+        if(personDTOList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Person List not found");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(personList);
+        return ResponseEntity.status(HttpStatus.OK).body(personDTOList);
     }
 
     public ResponseEntity getPersonById(String id) {
-        for(Person per : personList) {
+        for(PersonDTO per : personDTOList) {
             if(id.equalsIgnoreCase(per.getId())) {
                 return ResponseEntity.status(HttpStatus.OK).body(per);
             }
@@ -50,13 +50,13 @@ public class PersonService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 
-    public ResponseEntity updatePerson(Person person) {
-        String requestId = person.getId();
+    public ResponseEntity updatePerson(PersonDTO personDTO) {
+        String requestId = personDTO.getId();
         int index = 0;
-        for(Person pers : personList) {
+        for(PersonDTO pers : personDTOList) {
             if(requestId.equalsIgnoreCase(pers.getId())) {
-                personList.set(index, person);
-                return ResponseEntity.status(HttpStatus.OK).body(person);
+                personDTOList.set(index, personDTO);
+                return ResponseEntity.status(HttpStatus.OK).body(personDTO);
             }
             index++;
         }
@@ -66,7 +66,7 @@ public class PersonService {
 
     private int findIndexById(String id){
         int index = 0;
-        for(Person p : personList) {
+        for(PersonDTO p : personDTOList) {
             if(id.equalsIgnoreCase(p.getId())) {
                 return index;
             }
@@ -75,12 +75,12 @@ public class PersonService {
         return -1;
     }
 
-    public ResponseEntity updatePerson2(Person person) {
-        String requestId = person.getId();
+    public ResponseEntity updatePerson2(PersonDTO personDTO) {
+        String requestId = personDTO.getId();
         int updateIndex = findIndexById(requestId);
         if(updateIndex != -1) {
-            personList.set(updateIndex, person);
-            return ResponseEntity.status(HttpStatus.OK).body(person);
+            personDTOList.set(updateIndex, personDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(personDTO);
         }
         String errorMessage = "Person with id " + requestId + " not found";
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
@@ -88,9 +88,9 @@ public class PersonService {
 
     public ResponseEntity deletePersonById(String id) {
         String message = "Person with id " + id;
-        for(Person per : personList) {
+        for(PersonDTO per : personDTOList) {
             if(id.equalsIgnoreCase(per.getId())) {
-                personList.remove(per);
+                personDTOList.remove(per);
                 return ResponseEntity.status(HttpStatus.OK).body(message + " removed successfully");
             }
         }
