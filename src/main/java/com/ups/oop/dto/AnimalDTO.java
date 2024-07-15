@@ -12,9 +12,12 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
-public class Person {
+public class AnimalDTO {
     private String id;
     private String name;
-    private String lastname;
-    private int age;
+    private String bread;
+    private String color;
+    private double weight;
+    private double length;
+    private double height;
 }
