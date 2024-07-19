@@ -20,27 +20,27 @@ public class AnimalController {
     }
 
     @GetMapping("/get-all-animals")
-    public ResponseEntity getAllPeople() {
+    public ResponseEntity getAllAnimals() {
         return this.animalService.getAllAnimals();
     }
 
     @GetMapping("/get-animal")
-    public ResponseEntity getPersonById(@RequestParam String id) {
+    public ResponseEntity getAnimalById(@RequestParam String id) {
         return this.animalService.getAnimalById(id);
     }
 
     @PostMapping("/animal")
-    public ResponseEntity createPerson(@RequestBody AnimalDTO animalDTO) {
+    public ResponseEntity createAnimal(@RequestBody AnimalDTO animalDTO) {
         return this.animalService.createAnimal(animalDTO);
     }
 
     @PutMapping("/update-animal")
-    public ResponseEntity updatePerson(@RequestBody AnimalDTO animalDTO) {
+    public ResponseEntity updateAnimal(@RequestBody AnimalDTO animalDTO) {
         return this.animalService.updateAnimal(animalDTO);
     }
 
     @DeleteMapping("/remove-animal")
-    public ResponseEntity deletePerson(@RequestParam String id) {
+    public ResponseEntity deleteAnimal(@RequestParam String id) {
         return this.animalService.deleteAnimalById(id);
     }
 }

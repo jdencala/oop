@@ -65,8 +65,8 @@ public class PersonService {
     }
 
     public ResponseEntity getPersonById(String personId) {
-        //Optional<Person> personOptional = personRepository.findById(Long.valueOf(id));
-        Optional<Person> personOptional = personRepository.findByPersonId(personId);
+        Optional<Person> personOptional = personRepository.findById(Long.valueOf(personId));
+        //Optional<Person> personOptional = personRepository.findByPersonId(personId);
         if(personOptional.isPresent()) {
             //if record was found
             Person personFound = personOptional.get();
