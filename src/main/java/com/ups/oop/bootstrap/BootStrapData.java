@@ -27,8 +27,15 @@ public class BootStrapData implements CommandLineRunner {
         p2.setLastname("Encalada");
         p2.setAge(35);
 
+        Person p3 = new Person();
+        p3.setPersonId("0929069532");
+        p3.setName("Daniel");
+        p3.setLastname("Dominguez");
+        p3.setAge(31);
+
         personRepository.save(p1);
         personRepository.save(p2);
+        personRepository.save(p3);
 
         System.out.println("--------- Started BootstrapData -------------");
         System.out.println("Number of Persons: " + personRepository.count());

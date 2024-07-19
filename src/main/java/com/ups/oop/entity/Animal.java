@@ -1,19 +1,23 @@
-package com.ups.oop.dto;
+package com.ups.oop.entity;
 
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Getter
 @Setter
-public class AnimalDTO {
-    private String id;
+public class Animal {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String name;
     private String breed;
     private String color;

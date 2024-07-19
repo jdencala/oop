@@ -1,16 +1,24 @@
 package com.ups.oop.service;
 
 import com.ups.oop.dto.PersonDTO;
+import com.ups.oop.entity.Person;
+import com.ups.oop.repository.PersonRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PersonService {
+    private final PersonRepository personRepository;
     private List<PersonDTO> personDTOList = new ArrayList<>();
+
+    public PersonService(PersonRepository personRepository) {
+        this.personRepository = personRepository;
+    }
 
     public ResponseEntity createPerson(PersonDTO personDTO) {
         String personId = personDTO.getId();
@@ -34,20 +42,43 @@ public class PersonService {
     }
 
     public ResponseEntity getAllPeople() {
-        if(personDTOList.isEmpty()) {
+
+        Iterable<Person> personIterable = personRepository.findAll();
+        List<PersonDTO> peopleList = new ArrayList<>();
+        for(Person per : personIterable) {
+//            PersonDTO person = new PersonDTO(
+//                    per.getPersonId(),
+//                    per.getName() + "-" + per.getLastname(),
+//                    per.getAge()
+//            );
+            PersonDTO person = new PersonDTO();
+            person.setId(per.getPersonId());
+            person.setName(per.getName() + "-" + per.getLastname());
+            person.setAge(per.getAge());
+            peopleList.add(person);
+        }
+
+        if(peopleList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Person List not found");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(personDTOList);
+        return ResponseEntity.status(HttpStatus.OK).body(peopleList);
     }
 
-    public ResponseEntity getPersonById(String id) {
-        for(PersonDTO per : personDTOList) {
-            if(id.equalsIgnoreCase(per.getId())) {
-                return ResponseEntity.status(HttpStatus.OK).body(per);
-            }
+    public ResponseEntity getPersonById(String personId) {
+        //Optional<Person> personOptional = personRepository.findById(Long.valueOf(id));
+        Optional<Person> personOptional = personRepository.findByPersonId(personId);
+        if(personOptional.isPresent()) {
+            //if record was found
+            Person personFound = personOptional.get();
+            PersonDTO person = new PersonDTO(personFound.getPersonId(),
+                    personFound.getName() + "-" + personFound.getLastname(),
+                    personFound.getAge());
+            return ResponseEntity.status(HttpStatus.OK).body(person);
+        } else {
+            //if record wasn't found
+            String errorMessage = "Person with id " + personId + " not found";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
         }
-        String errorMessage = "Person with id " + id + " not found";
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 
     public ResponseEntity updatePerson(PersonDTO personDTO) {
