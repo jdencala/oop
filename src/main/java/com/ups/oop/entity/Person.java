@@ -22,4 +22,11 @@ public class Person {
     private String name;
     private String lastname;
     private Integer age;
+
+    public Person(String personId, String name, String lastname, Integer age){
+        this.personId = personId;
+        this.name = name;
+        this.lastname = lastname;
+        this.age = age;
+    }
 }

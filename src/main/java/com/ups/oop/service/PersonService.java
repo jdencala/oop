@@ -22,13 +22,28 @@ public class PersonService {
 
     public ResponseEntity createPerson(PersonDTO personDTO) {
         String personId = personDTO.getId();
-        boolean wasFound = findPerson(personId);
-        if(wasFound) {
+        //check repository if record exist
+        Optional<Person> personOptional = personRepository.findByPersonId(personId);
+        if(personOptional.isPresent()) {
             String errorMessage = "Person with id " + personId + " already exists";
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
         } else {
-            personDTOList.add(personDTO);
-            return ResponseEntity.status(HttpStatus.OK).body(personDTO);
+            //Before Register Person, name and lastname are present
+            if(personDTO.getName().contains(" ")) {
+                //Build Person and save in Repository
+                Person personRecord = new Person();
+                personRecord.setPersonId(personId);
+                String[] nameStrings = personDTO.getName().split(" ");
+                String name = nameStrings[0];
+                String lastname = nameStrings[1];
+                personRecord.setName(name);
+                personRecord.setLastname(lastname);
+                personRecord.setAge(personDTO.getAge());
+                personRepository.save(personRecord);
+                return ResponseEntity.status(HttpStatus.OK).body(personDTO);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Person name must contain two strings separated by a whitespace");
+            }
         }
     }
 
@@ -65,8 +80,7 @@ public class PersonService {
     }
 
     public ResponseEntity getPersonById(String personId) {
-        Optional<Person> personOptional = personRepository.findById(Long.valueOf(personId));
-        //Optional<Person> personOptional = personRepository.findByPersonId(personId);
+        Optional<Person> personOptional = personRepository.findByPersonId(personId);
         if(personOptional.isPresent()) {
             //if record was found
             Person personFound = personOptional.get();
