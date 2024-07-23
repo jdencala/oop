@@ -47,15 +47,6 @@ public class PersonService {
         }
     }
 
-    private boolean findPerson(String id) {
-        for(PersonDTO personDTO : personDTOList) {
-            if(id.equalsIgnoreCase(personDTO.getId())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public ResponseEntity getAllPeople() {
 
         Iterable<Person> personIterable = personRepository.findAll();
@@ -97,48 +88,41 @@ public class PersonService {
 
     public ResponseEntity updatePerson(PersonDTO personDTO) {
         String requestId = personDTO.getId();
-        int index = 0;
-        for(PersonDTO pers : personDTOList) {
-            if(requestId.equalsIgnoreCase(pers.getId())) {
-                personDTOList.set(index, personDTO);
+        //check repository if record exist
+        Optional<Person> personOptional = personRepository.findByPersonId(requestId);
+        if(personOptional.isPresent()) {
+            //If record exists, then perform Update
+            Person personRecord = personOptional.get();
+            if(personDTO.getName().contains(" ")) {
+                //Build Person and save in Repository
+                personRecord.setPersonId(requestId);
+                String[] nameStrings = personDTO.getName().split(" ");
+                String name = nameStrings[0];
+                String lastname = nameStrings[1];
+                personRecord.setName(name);
+                personRecord.setLastname(lastname);
+                personRecord.setAge(personDTO.getAge());
+                personRepository.save(personRecord);
                 return ResponseEntity.status(HttpStatus.OK).body(personDTO);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Person name must contain two strings separated by a whitespace");
             }
-            index++;
+        } else {
+            String errorMessage = "Person with id " + requestId + " not found";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
         }
-        String errorMessage = "Person with id " + requestId + " not found";
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
-    }
-
-    private int findIndexById(String id){
-        int index = 0;
-        for(PersonDTO p : personDTOList) {
-            if(id.equalsIgnoreCase(p.getId())) {
-                return index;
-            }
-            index ++;
-        }
-        return -1;
-    }
-
-    public ResponseEntity updatePerson2(PersonDTO personDTO) {
-        String requestId = personDTO.getId();
-        int updateIndex = findIndexById(requestId);
-        if(updateIndex != -1) {
-            personDTOList.set(updateIndex, personDTO);
-            return ResponseEntity.status(HttpStatus.OK).body(personDTO);
-        }
-        String errorMessage = "Person with id " + requestId + " not found";
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 
     public ResponseEntity deletePersonById(String id) {
         String message = "Person with id " + id;
-        for(PersonDTO per : personDTOList) {
-            if(id.equalsIgnoreCase(per.getId())) {
-                personDTOList.remove(per);
-                return ResponseEntity.status(HttpStatus.OK).body(message + " removed successfully");
-            }
+        Optional<Person> personOptional = personRepository.findByPersonId(id);
+        if(personOptional.isPresent()) {
+            //If record was found, then delete record
+            personRepository.delete(personOptional.get());
+            return ResponseEntity.status(HttpStatus.OK).body(message + " removed successfully");
+        } else {
+            //Return error message
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message + " not found");
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message + " not found");
     }
 }
