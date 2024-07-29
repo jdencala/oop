@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>People List</title>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+
+        tbody tr:nth-child(odd) {
+          background: lightblue;
+        }
+
+        th {
+          background-color: lightgreen;
+          padding: 10px;
+          width: 150px;
+        }
+
+        tr:hover{
+           box-shadow: 0px 2px 0px rgba(0,0,0,0.5);
+           cursor: pointer;
+        }
+
+        td {
+          padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>List of People</h2>
+    <br>
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Age</th>
+        </tr>
+        <tr>
+            <td>0925849630</td>
+            <td>Jorge Encalada</td>
+            <td>28</td>
+        </tr>
+        <tr>
+            <td>0929069532</td>
+            <td>Sandy Medina</td>
+            <td>32</td>
+        </tr>
+        <tr>
+            <td>0909542557</td>
+            <td>Washington Encalada</td>
+            <td>50</td>
+        </tr>
+        <tr>
+            <td>0925849622</td>
+            <td>Yorch Encalada</td>
+            <td>32</td>
+        </tr>
+    </table>
+</body>
+</html>
