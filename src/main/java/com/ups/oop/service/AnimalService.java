@@ -43,20 +43,26 @@ public class AnimalService {
     }
 
     public ResponseEntity getAllAnimals() {
+        List<AnimalDTO> animals = getAnimals();
+        if(animals.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Animal List not found");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(animals);
+    }
+
+    public List<AnimalDTO> getAnimals() {
         Iterable<Animal> animalIterable = animalRepository.findAll();
         List<AnimalDTO> animals = new ArrayList<>();
         for(Animal anim : animalIterable) {
             AnimalDTO animal = new AnimalDTO();
             animal.setAnimalCode(anim.getName() + "-" + anim.getBreed() + "-" + anim.getColor());
+            animal.setName(anim.getPetName());
             animal.setWeight(anim.getWeight());
             animal.setLength(anim.getLength());
             animal.setHeight(anim.getHeight());
             animals.add(animal);
         }
-        if(animals.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Animal List not found");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(animals);
+        return animals;
     }
 
     public ResponseEntity getAnimalById(String id) {

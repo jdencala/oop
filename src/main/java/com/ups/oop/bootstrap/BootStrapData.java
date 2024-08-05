@@ -43,6 +43,7 @@ public class BootStrapData implements CommandLineRunner {
 
         //Animals
         Animal a1 = new Animal();
+        a1.setPetName("Mily");
         a1.setName("Golden");
         a1.setBreed("Retriever");
         a1.setColor("Caramel");
@@ -51,6 +52,7 @@ public class BootStrapData implements CommandLineRunner {
         a1.setLength(1.1);
 
         Animal a2 = new Animal();
+        a2.setPetName("Milo");
         a2.setName("Labrador");
         a2.setBreed("Retriever");
         a2.setColor("White");
