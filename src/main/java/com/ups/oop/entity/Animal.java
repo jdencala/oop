@@ -18,6 +18,7 @@ public class Animal {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private String petName;
     private String name;
     private String breed;
     private String color;

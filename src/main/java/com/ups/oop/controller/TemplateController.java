@@ -1,5 +1,6 @@
 package com.ups.oop.controller;
 
+import com.ups.oop.service.AnimalService;
 import com.ups.oop.service.PersonService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -10,9 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class TemplateController {
 
     private final PersonService personService;
+    private final AnimalService animalService;
 
-    public TemplateController(PersonService personService) {
+    public TemplateController(PersonService personService, AnimalService animalService) {
         this.personService = personService;
+        this.animalService = animalService;
     }
 
     @GetMapping("/template")
@@ -24,5 +27,11 @@ public class TemplateController {
     public String getPeople(Model model) {
         model.addAttribute("people", personService.getPeople());
         return "person/list";
+    }
+
+    @GetMapping("/animals")
+    public String getAnimal(Model model) {
+        model.addAttribute("animals", animalService.getAnimals());
+        return "animal/list";
     }
 }
