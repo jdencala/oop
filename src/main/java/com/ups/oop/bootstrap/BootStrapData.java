@@ -1,13 +1,7 @@
 package com.ups.oop.bootstrap;
 
-import com.ups.oop.entity.Animal;
-import com.ups.oop.entity.Author;
-import com.ups.oop.entity.Book;
-import com.ups.oop.entity.Person;
-import com.ups.oop.repository.AnimalRepository;
-import com.ups.oop.repository.AuthorRepository;
-import com.ups.oop.repository.BookRepository;
-import com.ups.oop.repository.PersonRepository;
+import com.ups.oop.entity.*;
+import com.ups.oop.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -17,16 +11,19 @@ public class BootStrapData implements CommandLineRunner {
     private final AnimalRepository animalRepository;
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
+    private final ClientRepository clientRepository;
 
-    public BootStrapData(PersonRepository personRepository, AnimalRepository animalRepository, AuthorRepository authorRepository, BookRepository bookRepository) {
+    public BootStrapData(PersonRepository personRepository, AnimalRepository animalRepository,
+                         AuthorRepository authorRepository, BookRepository bookRepository,
+                         ClientRepository clientRepository) {
         this.personRepository = personRepository;
         this.animalRepository = animalRepository;
         this.authorRepository = authorRepository;
         this.bookRepository = bookRepository;
+        this.clientRepository = clientRepository;
     }
 
-    @Override
-    public void run(String... args) throws Exception {
+    public void createPeople() {
         Person p1 = new Person();
         p1.setPersonId("0925849630");
         p1.setName("Jorge");
@@ -48,7 +45,9 @@ public class BootStrapData implements CommandLineRunner {
         personRepository.save(p1);
         personRepository.save(p2);
         personRepository.save(p3);
+    }
 
+    public void createAnimals() {
         //Animals
         Animal a1 = new Animal();
         a1.setPetName("Mily");
@@ -70,7 +69,9 @@ public class BootStrapData implements CommandLineRunner {
 
         animalRepository.save(a1);
         animalRepository.save(a2);
+    }
 
+    public void createBooksAndAuthors(){
         //Books and Authors
 
         Author au1 = new Author();
@@ -107,13 +108,27 @@ public class BootStrapData implements CommandLineRunner {
 
         au1.getBooks().add(b2);
         authorRepository.save(au2);
+    }
 
+    public void createClients() {
+        Client c1 = new Client("c-00001", "0925849630", "Jorge", "Encalada", 28);
+        Client c2 = new Client("c-00002", "0925849622", "Yorch", "Encalada", 35);
+        clientRepository.save(c1);
+        clientRepository.save(c2);
+    }
 
+    @Override
+    public void run(String... args) throws Exception {
+        createPeople();
+        createAnimals();
+        createBooksAndAuthors();
+        createClients();
 
         System.out.println("--------- Started BootstrapData -------------");
         System.out.println("Number of Persons: " + personRepository.count());
         System.out.println("Number of Animals: " + animalRepository.count());
         System.out.println("Number of Authors: " + authorRepository.count());
         System.out.println("Number of Books: " + bookRepository.count());
+        System.out.println("Number of Clients: " + clientRepository.count());
     }
 }
