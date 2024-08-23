@@ -12,15 +12,20 @@ public class BootStrapData implements CommandLineRunner {
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
     private final ClientRepository clientRepository;
+    private final WorkerRepository workerRepository;
+    private final EditorialRepository editorialRepository;
 
     public BootStrapData(PersonRepository personRepository, AnimalRepository animalRepository,
                          AuthorRepository authorRepository, BookRepository bookRepository,
-                         ClientRepository clientRepository) {
+                         ClientRepository clientRepository, WorkerRepository workerRepository,
+                         EditorialRepository editorialRepository) {
         this.personRepository = personRepository;
         this.animalRepository = animalRepository;
         this.authorRepository = authorRepository;
         this.bookRepository = bookRepository;
         this.clientRepository = clientRepository;
+        this.workerRepository = workerRepository;
+        this.editorialRepository = editorialRepository;
     }
 
     public void createPeople() {
@@ -71,7 +76,7 @@ public class BootStrapData implements CommandLineRunner {
         animalRepository.save(a2);
     }
 
-    public void createBooksAndAuthors(){
+    public void createBooksAuthorsAndEditorials(){
         //Books and Authors
 
         Author au1 = new Author();
@@ -108,6 +113,30 @@ public class BootStrapData implements CommandLineRunner {
 
         au1.getBooks().add(b2);
         authorRepository.save(au2);
+
+        //Editorials
+        Editorial e1 = new Editorial();
+        e1.setName("Pearson");
+        e1.getBooks().add(b1);
+        e1.getBooks().add(b2);
+        editorialRepository.save(e1);
+
+        Editorial e2 = new Editorial();
+        e2.setName("LNS");
+        e2.getBooks().add(b2);
+        e2.getBooks().add(b3);
+        editorialRepository.save(e2);
+
+        //books Join with Editorial
+        b1.getEditorials().add(e1);
+        bookRepository.save(b1);
+
+        b2.getEditorials().add(e1);
+        b2.getEditorials().add(e2);
+        bookRepository.save(b2);
+
+        b3.getEditorials().add(e2);
+        bookRepository.save(b3);
     }
 
     public void createClients() {
@@ -117,12 +146,22 @@ public class BootStrapData implements CommandLineRunner {
         clientRepository.save(c2);
     }
 
+    public void createWorkers() {
+        Worker w1 = new Worker("w-00001", "0925849630", "Jorge", "Encalada", 28);
+        Worker w2 = new Worker("w-00002", "0925849622", "Yorch", "Encalada", 35);
+        Worker w3 = new Worker("w-00003", "0925849655", "Danny", "Encalada", 30);
+        workerRepository.save(w1);
+        workerRepository.save(w2);
+        workerRepository.save(w3);
+    }
+
     @Override
     public void run(String... args) throws Exception {
         createPeople();
         createAnimals();
-        createBooksAndAuthors();
+        createBooksAuthorsAndEditorials();
         createClients();
+        createWorkers();
 
         System.out.println("--------- Started BootstrapData -------------");
         System.out.println("Number of Persons: " + personRepository.count());
@@ -130,5 +169,6 @@ public class BootStrapData implements CommandLineRunner {
         System.out.println("Number of Authors: " + authorRepository.count());
         System.out.println("Number of Books: " + bookRepository.count());
         System.out.println("Number of Clients: " + clientRepository.count());
+        System.out.println("Number of Workers: " + workerRepository.count());
     }
 }

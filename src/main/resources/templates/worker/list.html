@@ -1,12 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Books List</title>
+    <title>Worker List</title>
     <style>
-        body{
-          background-color: #ff000069;
-        }
-
         table, th, td {
           border: 1px solid black;
           border-collapse: collapse;
@@ -37,18 +33,20 @@
     </style>
 </head>
 <body>
-    <h2>List of Books</h2>
+    <h2>List of Workers</h2>
     <br>
     <table>
         <tr>
-            <th>Book</th>
-            <th>Author</th>
-            <th>Editorial(s)</th>
+            <th>Worker Code</th>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Age</th>
         </tr>
-        <tr th:each="b: ${books}">
-            <th th:text="${b.title}"></th>
-            <th th:text="${b.author}"></th>
-            <th th:text="${b.editorials}"></th>
+        <tr th:each="w: ${workers}">
+            <th th:text="${w.workerCode}"></th>
+            <th th:text="${w.id}"></th>
+            <th th:text="${w.name}"></th>
+            <th th:text="${w.age}"></th>
         </tr>
     </table>
 </body>
