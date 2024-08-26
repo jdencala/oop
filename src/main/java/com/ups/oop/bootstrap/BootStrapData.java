@@ -1,9 +1,28 @@
 package com.ups.oop.bootstrap;
 
-import com.ups.oop.entity.*;
-import com.ups.oop.repository.*;
+import com.ups.oop.entity.Animal;
+import com.ups.oop.entity.Author;
+import com.ups.oop.entity.Book;
+import com.ups.oop.entity.Client;
+import com.ups.oop.entity.Editorial;
+import com.ups.oop.entity.Loan;
+import com.ups.oop.entity.LoanDetail;
+import com.ups.oop.entity.Person;
+import com.ups.oop.entity.Worker;
+import com.ups.oop.repository.AnimalRepository;
+import com.ups.oop.repository.AuthorRepository;
+import com.ups.oop.repository.BookRepository;
+import com.ups.oop.repository.ClientRepository;
+import com.ups.oop.repository.EditorialRepository;
+import com.ups.oop.repository.LoanDetailRepository;
+import com.ups.oop.repository.LoanRepository;
+import com.ups.oop.repository.PersonRepository;
+import com.ups.oop.repository.WorkerRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.Optional;
 
 @Component
 public class BootStrapData implements CommandLineRunner {
@@ -14,11 +33,14 @@ public class BootStrapData implements CommandLineRunner {
     private final ClientRepository clientRepository;
     private final WorkerRepository workerRepository;
     private final EditorialRepository editorialRepository;
+    private final LoanRepository loanRepository;
+    private final LoanDetailRepository loanDetailRepository;
 
     public BootStrapData(PersonRepository personRepository, AnimalRepository animalRepository,
                          AuthorRepository authorRepository, BookRepository bookRepository,
                          ClientRepository clientRepository, WorkerRepository workerRepository,
-                         EditorialRepository editorialRepository) {
+                         EditorialRepository editorialRepository, LoanRepository loanRepository,
+                         LoanDetailRepository loanDetailRepository) {
         this.personRepository = personRepository;
         this.animalRepository = animalRepository;
         this.authorRepository = authorRepository;
@@ -26,6 +48,8 @@ public class BootStrapData implements CommandLineRunner {
         this.clientRepository = clientRepository;
         this.workerRepository = workerRepository;
         this.editorialRepository = editorialRepository;
+        this.loanRepository = loanRepository;
+        this.loanDetailRepository = loanDetailRepository;
     }
 
     public void createPeople() {
@@ -155,6 +179,54 @@ public class BootStrapData implements CommandLineRunner {
         workerRepository.save(w3);
     }
 
+    public void createLoans() {
+        Optional<Client> clientOptional = clientRepository.findById(4l);
+        Client client = new Client();
+        if(clientOptional.isPresent()) {
+            client = clientOptional.get();
+        }
+
+        Optional<Worker> workerOptional = workerRepository.findById(8l);
+        Worker worker = new Worker();
+        if(workerOptional.isPresent()) {
+            worker = workerOptional.get();
+        }
+
+        Loan loan = new Loan();
+        loan.setSerial("l-0001");
+        loan.setLoanDate(new Date());
+        loan.setClient(client);
+        loan.setDays(30);
+        loan.setWorker(worker);
+        loanRepository.save(loan);
+
+        Optional<Book> bookOptional = bookRepository.findById(1l);
+        Book b1 = new Book();
+        if(bookOptional.isPresent()) {
+            b1 = bookOptional.get();
+        }
+        bookOptional = bookRepository.findById(2l);
+        Book b2 = new Book();
+        if(bookOptional.isPresent()) {
+            b2 = bookOptional.get();
+        }
+
+        LoanDetail l1 = new LoanDetail();
+        l1.setLoan(loan);
+        l1.setBook(b1);
+        loanDetailRepository.save(l1);
+
+        LoanDetail l2 = new LoanDetail();
+        l2.setLoan(loan);
+        l2.setBook(b2);
+        loanDetailRepository.save(l2);
+
+        loan.getDetailList().add(l1);
+        loan.getDetailList().add(l2);
+        loanRepository.save(loan);
+    }
+
+
     @Override
     public void run(String... args) throws Exception {
         createPeople();
@@ -162,6 +234,7 @@ public class BootStrapData implements CommandLineRunner {
         createBooksAuthorsAndEditorials();
         createClients();
         createWorkers();
+        createLoans();
 
         System.out.println("--------- Started BootstrapData -------------");
         System.out.println("Number of Persons: " + personRepository.count());
@@ -170,5 +243,7 @@ public class BootStrapData implements CommandLineRunner {
         System.out.println("Number of Books: " + bookRepository.count());
         System.out.println("Number of Clients: " + clientRepository.count());
         System.out.println("Number of Workers: " + workerRepository.count());
+        System.out.println("Number of Loans: " + loanRepository.count());
+        System.out.println("Number of Loans Details: " + loanDetailRepository.count());
     }
 }
