@@ -13,15 +13,20 @@ public class TemplateController {
     private final ClientService clientService;
     private final WorkerService workerService;
     private final BookService bookService;
+    private final LoanService loanService;
+    private final LoanDetailService loanDetailService;
 
     public TemplateController(PersonService personService, AnimalService animalService,
                               ClientService clientService, WorkerService workerService,
-                              BookService bookService) {
+                              BookService bookService, LoanService loanService,
+                              LoanDetailService loanDetailService) {
         this.personService = personService;
         this.animalService = animalService;
         this.clientService = clientService;
         this.workerService = workerService;
         this.bookService = bookService;
+        this.loanService = loanService;
+        this.loanDetailService = loanDetailService;
     }
 
     @GetMapping("/template")
@@ -57,5 +62,17 @@ public class TemplateController {
     public String getWorkers(Model model) {
         model.addAttribute("workers", workerService.getWorkers());
         return "worker/list";
+    }
+
+    @GetMapping("/loans")
+    public String getLoans(Model model) {
+        model.addAttribute("loans", loanService.getLoans());
+        return "loan/list";
+    }
+
+    @GetMapping("/loans-details")
+    public String getLoanDetails(Model model) {
+        model.addAttribute("loansDetails", loanDetailService.getLoanDetails());
+        return "loan-details/list";
     }
 }
